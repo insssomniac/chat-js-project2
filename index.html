@@ -12,21 +12,136 @@
   <title>Document</title>
 </head>
 <body>
-<div id="welcome" class="welcome">
-  <div class="welcome__login">
-    <div class="welcome__icon-block">
-      <img src="resources/chat-icon.svg" alt="chat icon" class="welcome__icon-elem">
-    </div>
-    <h1 class="welcome__title title">Авторизация</h1>
-    <div class="welcome__desc">Введите пожалуйста свой ник для дальнейшей авторизации</div>
-    <form action="#" class="form">
-      <label class="form__block">
-        <input type="text" name="name" placeholder="Введите свой ник" class="form__input form__input--large" required>
-      </label>
-      <button type="submit" class="btn btn--blue btn--large">Войти</button>
-    </form>
-  </div>
-</div>
+<div id="app"></div>
 </body>
+<script id="chat-template" type="text/x-handlebars-template">
+  {{#if nickname}}
+  <div class="chat">
+    <div class="chat__left-section users">
+      <div class="users__user user">
+        <div class="user__picture-container">
+        </div>
+        <div class="user__info">
+          <div class="user__nickname">Boroda23</div>
+          <div class="user__last-message">Рад был пообщаться</div>
+        </div>
+      </div>
+      <div class="users__user user">
+        <div class="user__picture-container">
+        </div>
+        <div class="user__info">
+          <div class="user__nickname">Nik</div>
+          <div class="user__last-message">Привет!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat__main-section main">
+      <div class="main__top-line">
+        <div class="main__title">Чат</div>
+        <div class="main__members">2 участника</div>
+      </div>
+
+      <div class="main__conversation-section conversation" id="conversation-section">
+
+        <div class="conversation__message message someone-message">
+          <div class="message__user-pic">
+          </div>
+          <div class="message__block">
+            <div class="message__nickname">Boroda23</div>
+            <div class="message__unit">
+              <div class="message__text">Привет!</div>
+              <div class="message__time">17:55</div>
+            </div>
+            <div class="message__unit">
+              <div class="message__text">Как дела?</div>
+              <div class="message__time">17:55</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="conversation__message message own-message" data-author="Nik">
+          <div class="message__block">
+            <div class="message__nickname">Nik</div>
+            <div class="message__unit">
+              <div class="message__text">Привет!</div>
+              <div class="message__time">17:58</div>
+            </div>
+            <div class="message__unit">
+              <div class="message__text">Хорошо</div>
+              <div class="message__time">17:58</div>
+            </div>
+            <div class="message__unit">
+              <div class="message__text">Как у тебя дела?</div>
+              <div class="message__time">17:58</div>
+            </div>
+          </div>
+          <div class="message__user-pic">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="main__bottom-line">
+        <form action="#" id="message-form" method="post" class="message-form">
+          <label class="message-form__block">
+            <input type="text" id="message-input" autocomplete="off" name="message" placeholder="Введите сообщение..." class="form__input form__input--small" required>
+          </label>
+          <button type="submit" id="sendButton" class="btn btn--blue btn--small">Отправить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {{else}}
+  <div id="welcome" class="welcome">
+    <div class="welcome__login">
+      <div class="welcome__icon-block">
+        <img src="resources/chat-icon.svg" alt="chat icon" class="welcome__icon-elem">
+      </div>
+      <h1 class="welcome__title title">Авторизация</h1>
+      <div class="welcome__desc">Введите пожалуйста свой ник для дальнейшей авторизации</div>
+      <form action="#" method="post" class="form" id="login-form">
+        <label class="form__block">
+          <input type="text" id="nickname-input" name="name" placeholder="Введите свой ник" class="form__input form__input--large" required>
+        </label>
+        <button type="submit" class="btn btn--blue btn--large">Войти</button>
+      </form>
+    </div>
+  </div>
+  {{/if}}
+</script>
+<script id="message-own" type="text/x-handlebars-template">
+  <div class="conversation__message message own-message" data-author="{{nickname}}">
+    <div class="message__block">
+      <div class="message__nickname">{{nickname}}</div>
+        <div class="message__unit">
+          <div class="message__text">{{text}}</div>
+          <div class="message__time">{{time}}</div>
+        </div>
+    </div>
+    <div class="message__user-pic">
+    </div>
+  </div>
+</script>
+<script id="message-someone" type="text/x-handlebars-template">
+  <div class="conversation__message message someone-message" data-author="{{nickname}}">
+    <div class="message__user-pic">
+    </div>
+    <div class="message__block">
+      <div class="message__nickname">{{nickname}}</div>
+      <div class="message__unit">
+        <div class="message__text">{{text}}</div>
+        <div class="message__time">{{time}}</div>
+      </div>
+    </div>
+  </div>
+</script>
+<script id="message-unit" type="text/x-handlebars-template">
+  <div class="message__unit">
+    <div class="message__text">{{text}}</div>
+    <div class="message__time">{{time}}</div>
+  </div>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <script src="js/main.js"></script>
 </html>

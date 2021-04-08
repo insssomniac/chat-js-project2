@@ -91,15 +91,21 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
+.form__input--small {
+  width: 100%;
+}
+
 input::-moz-placeholder {
-  color: #858F98;
+  color: #5B6774;
   font-weight: 300;
 }
 
 input::-webkit-input-placeholder {
-  color: #858F98;
+  color: #5B6774;
   font-weight: 300;
 }
+
+
 
 .btn {
   display: inline-flex;
@@ -111,13 +117,18 @@ input::-webkit-input-placeholder {
 
 .btn--large {
   padding: 13px 39px;
+  text-transform: uppercase;
 }
 
 .btn--blue {
   background: #5188C1;
   border-radius: 5px;
   color: #fff;
-  text-transform: uppercase;
+}
+
+.btn--small {
+  font-size: 14px;
+  padding: 6px 20px;
 }
 
 
@@ -206,6 +217,91 @@ input::-webkit-input-placeholder {
   background: #0E1621;
 }
 
+.conversation__message {
+  display: flex;
+  max-width: 50%;
+  margin-bottom: 10px;
+}
+
+.conversation__message:last-child {
+  margin-bottom: 0;
+}
+
+.message__user-pic {
+  display: inline-block;
+  width: 33px;
+  height: 33px;
+  min-width: 33px;
+  position: relative;
+  border-radius: 50%;
+  background: #232F3D;
+  overflow: hidden;
+  margin-top: 25px;
+}
+
+.message__nickname {
+  color: #5387C1;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.someone-message .message__user-pic {
+  margin-right: 10px;
+}
+
+.own-message {
+  align-self: flex-end;
+}
+
+.own-message .message__user-pic {
+  margin-left: 10px;
+}
+
+.message__block {
+  display: flex;
+  flex-direction: column;
+}
+
+.own-message .message__block {
+  align-items: flex-end;
+}
+
+.someone-message .message__block {
+  align-items: flex-start;
+}
+
+.message__unit {
+  padding: 8px 4px 8px 21px;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.message__unit:last-child {
+  margin-bottom: 0;
+}
+
+.someone-message .message__unit {
+  background: #182633;
+}
+
+.own-message .message__unit {
+  background: #2B5279;
+}
+
+.message__text {
+  margin-right: 15px;
+}
+
+.message__time {
+  color: #658FB7;
+  font-weight: 300;
+  align-self: flex-end;
+  margin-bottom: -5px;
+}
+
+
 .main__bottom-line {
   display: flex;
   align-items: center;
@@ -221,10 +317,7 @@ input::-webkit-input-placeholder {
 }
 
 .message-form__block {
-  /*flex-grow: 2;*/
+  flex-grow: 2;
 }
 
-.btn--small {
-  padding: 6px 20px;
-}
 
