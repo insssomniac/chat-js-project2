@@ -13,6 +13,7 @@ let messageInput;
 
 if (nickname) {
     assignChatElements();
+    handlePhotoWindow();
 } else {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -22,6 +23,7 @@ if (nickname) {
         nicknameInput.value = '';
         appContainer.innerHTML = appBody(nickname);
         assignChatElements();
+        handlePhotoWindow();
         sendMessage('user:in');
     });
 }
@@ -112,13 +114,18 @@ function messageUnit(messageData) {
     return template({ text: messageData.message, time: `${time.getHours()}:${time.getMinutes()}` });
 }
 
+function handlePhotoWindow() {
+    const menuButton = document.querySelector("#hamburger");
+    const fullscreenModal = document.querySelector("#fullscreen-modal");
+    const closeFsModal = document.querySelector("#close-fs-modal");
+    const toggleModal = () => fullscreenModal.classList.toggle('fullscreen-modal--active')
 
+    menuButton.addEventListener('click', e => {
+        e.preventDefault();
+        toggleModal();
+    });
 
-
-function dd() {
-    const lastMessageElem = chatContainer.children[chatContainer.children.length - 1];
-    const lastMessageBlock = lastMessageElem.querySelector('.message__block');
-    const lastMessageAuthor = lastMessageElem.getAttribute('data-author');
-
-    console.log(lastMessageBlock);
+    closeFsModal.addEventListener('click', toggleModal);
 }
+
+

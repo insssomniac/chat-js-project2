@@ -9,6 +9,10 @@ html, body {
   font-family: 'Ubuntu', sans-serif;
 }
 
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-weight: normal;
@@ -104,7 +108,6 @@ input::-webkit-input-placeholder {
   color: #5B6774;
   font-weight: 300;
 }
-
 
 
 .btn {
@@ -320,4 +323,107 @@ input::-webkit-input-placeholder {
   flex-grow: 2;
 }
 
+
+.hamburger {
+  width: 22px;
+  height: 14px;
+  justify-content: space-between;
+  z-index: 100;
+  display: inline-flex;
+  position: fixed;
+  flex-direction: column;
+  top: 20px;
+  left: 23px;
+}
+
+.hamburger__plank {
+  display: block;
+  background: #6C7982;
+  height: 2px;
+}
+
+
+.fullscreen-modal {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  overflow-x: hidden;
+  z-index: 110;
+}
+
+.fullscreen-modal--active {
+  display: block;
+}
+
+.modal__window {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  width: 364px;
+  height: 220px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #17212B;
+  border-radius: 4px;
+  padding: 32px 35px 42px;
+  justify-content: space-between;
+}
+
+.modal__title {
+  font-size: 18px;
+}
+
+.modal__content {
+  display: flex;
+  align-items: center;
+}
+
+.modal__pic-preview {
+  display: inline-block;
+  width: 86px;
+  height: 86px;
+  position: relative;
+  border-radius: 50%;
+  background: url("../resources/modal-photo.svg") no-repeat center #232F3D;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+.modal__nickname {
+  font-size: 18px;
+}
+
+.fullscreen-modal__close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
+.btn-close-modal {
+  width: 25px;
+  height: 25px;
+}
+
+.btn-close-modal:before, .btn-close-modal:after {
+  position: absolute;
+  background-color: #747E87;
+  left: 12px;
+  content: "";
+  height: 25px;
+  width: 2px;
+  z-index: 180;
+}
+
+.btn-close-modal:before {
+  transform: rotate(45deg);
+}
+
+.btn-close-modal:after {
+  transform: rotate(-45deg);
+}
 
