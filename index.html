@@ -15,25 +15,22 @@
 <div id="app"></div>
 </body>
 <script id="chat-template" type="text/x-handlebars-template">
-  {{#if nickname}}
+
+  {{#if uid}}
   <div class="chat">
     <div class="chat__left-section users">
+
+      {{#each users}}
       <div class="users__user user">
         <div class="user__picture-container">
         </div>
         <div class="user__info">
-          <div class="user__nickname">Boroda23</div>
-          <div class="user__last-message">Рад был пообщаться</div>
+          <div class="user__nickname">users.nickname</div>
+          <div class="user__last-message">users.lastmessage</div>
         </div>
       </div>
-      <div class="users__user user">
-        <div class="user__picture-container">
-        </div>
-        <div class="user__info">
-          <div class="user__nickname">Nik</div>
-          <div class="user__last-message">Привет!</div>
-        </div>
-      </div>
+      {{/each}}
+
     </div>
 
     <div class="chat__main-section main">
@@ -42,45 +39,7 @@
         <div class="main__members">2 участника</div>
       </div>
 
-      <div class="main__conversation-section conversation" id="conversation-section">
-
-        <div class="conversation__message message someone-message">
-          <div class="message__user-pic">
-          </div>
-          <div class="message__block">
-            <div class="message__nickname">Boroda23</div>
-            <div class="message__unit">
-              <div class="message__text">Привет!</div>
-              <div class="message__time">17:55</div>
-            </div>
-            <div class="message__unit">
-              <div class="message__text">Как дела?</div>
-              <div class="message__time">17:55</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="conversation__message message own-message" data-author="Nik">
-          <div class="message__block">
-            <div class="message__nickname">Nik</div>
-            <div class="message__unit">
-              <div class="message__text">Привет!</div>
-              <div class="message__time">17:58</div>
-            </div>
-            <div class="message__unit">
-              <div class="message__text">Хорошо</div>
-              <div class="message__time">17:58</div>
-            </div>
-            <div class="message__unit">
-              <div class="message__text">Как у тебя дела?</div>
-              <div class="message__time">17:58</div>
-            </div>
-          </div>
-          <div class="message__user-pic">
-          </div>
-        </div>
-
-      </div>
+      <div class="main__conversation-section conversation" id="conversation-section"></div>
 
       <div class="main__bottom-line">
         <form action="#" id="message-form" method="post" class="message-form">
@@ -103,13 +62,13 @@
     <div class="modal__window">
       <a class="fullscreen-modal__close-btn btn-close-modal" id="close-fs-modal"></a>
       <div class="modal__title">Загрузка фото</div>
+      <div class="modal__desc">Перетащите изображение в эту область</div>
       <div class="modal__content">
         <div class="modal__pic-preview"></div>
         <div class="modal__nickname">{{nickname}}</div>
       </div>
     </div>
   </div>
-
   {{else}}
   <div id="welcome" class="welcome">
     <div class="welcome__login">
@@ -129,7 +88,7 @@
   {{/if}}
 </script>
 <script id="message-own" type="text/x-handlebars-template">
-  <div class="conversation__message message own-message" data-author="{{nickname}}">
+  <div class="conversation__message message own-message" data-author="{{uid}}">
     <div class="message__block">
       <div class="message__nickname">{{nickname}}</div>
         <div class="message__unit">
@@ -142,7 +101,7 @@
   </div>
 </script>
 <script id="message-someone" type="text/x-handlebars-template">
-  <div class="conversation__message message someone-message" data-author="{{nickname}}">
+  <div class="conversation__message message someone-message" data-author="{{uid}}">
     <div class="message__user-pic">
     </div>
     <div class="message__block">
@@ -158,6 +117,12 @@
   <div class="message__unit">
     <div class="message__text">{{text}}</div>
     <div class="message__time">{{time}}</div>
+  </div>
+</script>
+<script id="message-unit-service" type="text/x-handlebars-template">
+  <div class="message__unit service-message">
+    <div class="service-message__text">{{text}}</div>
+    <div class="service-message__time">{{time}}</div>
   </div>
 </script>
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>

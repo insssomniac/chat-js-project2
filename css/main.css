@@ -197,6 +197,7 @@ input::-webkit-input-placeholder {
   justify-content: center;
   height: 56px;
   padding: 0 16px;
+  min-height: 56px;
 }
 
 .main__title {
@@ -214,6 +215,7 @@ input::-webkit-input-placeholder {
   flex-direction: column;
   flex-grow: 3;
   padding: 0 10px;
+  overflow-y: scroll;
 }
 
 .conversation {
@@ -224,10 +226,6 @@ input::-webkit-input-placeholder {
   display: flex;
   max-width: 50%;
   margin-bottom: 10px;
-}
-
-.conversation__message:last-child {
-  margin-bottom: 0;
 }
 
 .message__user-pic {
@@ -293,7 +291,7 @@ input::-webkit-input-placeholder {
   background: #2B5279;
 }
 
-.message__text {
+.message__text, .service-message__text {
   margin-right: 15px;
 }
 
@@ -304,12 +302,25 @@ input::-webkit-input-placeholder {
   margin-bottom: -5px;
 }
 
+.service-message {
+  display: flex;
+  justify-content: flex-start;
+  max-width: 45%;
+}
+
+.service-message__text, .service-message__time {
+  color: #5B6774;
+  font-weight: 300;
+  font-size: 16px;
+}
+
 
 .main__bottom-line {
   display: flex;
   align-items: center;
   height: 56px;
   padding: 0 10px 0 16px;
+  min-height: 56px;
 }
 
 .message-form {
@@ -376,6 +387,12 @@ input::-webkit-input-placeholder {
 
 .modal__title {
   font-size: 18px;
+}
+
+.modal__desc {
+  font-size: 12px;
+  color: #5B6774;
+  font-weight: 300;
 }
 
 .modal__content {

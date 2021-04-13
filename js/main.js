@@ -1,45 +1,71 @@
 const appContainer = document.querySelector('#app');
 const socket = new WebSocket("ws://localhost:8080");
 let nickname = sessionStorage.getItem('nickname');
+let uid = sessionStorage.getItem('uid');
 
-appContainer.innerHTML = appBody(nickname);
+appContainer.innerHTML = appBody();
 
 const loginForm = document.querySelector('#login-form');
 const nicknameInput = document.querySelector('#nickname-input');
 
-let chatContainer;
-let messageForm;
-let messageInput;
+let chatContainer, messageForm, messageInput;
 
-if (nickname) {
+if (uid) {
     assignChatElements();
     handlePhotoWindow();
+    sendMessage('user:in');
+    sendMessage('users:get');
+    sendMessage('messages:get');
+    console.log('refresh page');
 } else {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        nickname = nicknameInput.value;
-        sessionStorage.setItem('nickname', nickname);
-        nicknameInput.value = '';
-        appContainer.innerHTML = appBody(nickname);
-        assignChatElements();
-        handlePhotoWindow();
-        sendMessage('user:in');
+        if (socket.readyState === 1) {
+            nickname = nicknameInput.value;
+            uid = getUid(nickname);
+            sessionStorage.setItem('nickname', nickname);
+            sessionStorage.setItem('uid', uid);
+            nicknameInput.value = '';
+            appContainer.innerHTML = appBody();
+            assignChatElements();
+            handlePhotoWindow();
+            sendMessage('user:in');
+            sendMessage('users:get');
+            sendMessage('messages:get');
+        } else {
+            return console.error('Connection error');
+        }
     });
 }
 
 socket.addEventListener('message', (e) => {
-    addMessage(e.data);
+    const messageDecoded = JSON.parse(e.data);
+    switch (messageDecoded.event) {
+        case "users:all":
+            // applyCurrentUsers();
+            break;
+        case "messages:all":
+            applyCurrentMessages(messageDecoded.payload);
+            break;
+        default:
+            addMessage(messageDecoded, chatContainer);
+    }
 });
 
-// socket.addEventListener('error', () => {
-//     alert('Connection closed.');
-// });
+socket.addEventListener('error', () => {
+    console.error('Connection closed.');
+});
 
-function appBody(nickname) {
+
+function getUid(nickname) {
+    return nickname + '_' + Date.now() + (Math.floor(Math.random() * (10000 - 99)) + 99);
+}
+
+function appBody() {
     const sourceTemplate = document.getElementById("chat-template").innerHTML;
     const template = Handlebars.compile(sourceTemplate);
-    return template({nickname});
+    return template({nickname: nickname, uid: uid});
 }
 
 function assignChatElements() {
@@ -56,39 +82,65 @@ function assignChatElements() {
 }
 
 function sendMessage(eventType, text = '') {
-    const message = JSON.stringify({ event: eventType, payload: {nickname: nickname, message: text} });
-    socket.send(message);
+    const date = new Date();
+    const time = `${date.getHours()}:${date.getMinutes()}`;
+    const timestamp = date.getTime();
+
+    if (eventType === 'user:in') text = `${nickname} вошел в чат`;
+
+    const message = JSON.stringify(
+        { event: eventType, payload: {uid: uid, nickname: nickname, message: text, time: time, timestamp: timestamp} }
+    );
+    send(message);
 }
 
-function addMessage(message) {
-    const messageDecoded = JSON.parse(message);
+function send(message) {
+    if (socket.readyState === 1) {
+        socket.send(message);
+    } else {
+        setTimeout(() => send(message), 1000);
+    }
+}
 
-    switch (messageDecoded.event) {
+function addMessage(message, chatContainer) {
+    switch (message.event) {
         case 'message:add':
-            const lastMessageElem = chatContainer.children[chatContainer.children.length - 1];
-            const lastMessageBlock = lastMessageElem.querySelector('.message__block');
-            const lastMessageAuthor = lastMessageElem.getAttribute('data-author');
-
-            if (lastMessageAuthor === messageDecoded.payload.nickname) {
-                const unit = document.createElement('div');
-                unit.innerHTML = messageUnit(messageDecoded.payload);
-                lastMessageBlock.append(unit.children[0]);
-            } else {
-                const newMessage = document.createElement('div');
-                newMessage.innerHTML = newMessageBody(messageDecoded.payload);
-                chatContainer.append(newMessage.children[0]);
-            }
+            addTextMessage(message, chatContainer);
             break;
         case 'user:in':
-            console.log(messageDecoded.payload);
-            break;
         case 'user:out':
-            console.log(messageDecoded.payload);
+            const unit = document.createElement('div');
+            unit.innerHTML = newMessageUnit(message.payload, 'serviceMessage');
+            chatContainer.append(unit.children[0]);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
             break;
         default:
             console.error('unknown message type');
             break;
     }
+}
+
+function addTextMessage(messageData, chatContainer) {
+    let lastMessageElem, lastMessageBlock, lastMessageAuthor;
+    let unit = document.createElement('div');
+
+    if (chatContainer.children.length > 0) {
+        lastMessageElem = chatContainer.children[chatContainer.children.length - 1];
+        lastMessageBlock = lastMessageElem.querySelector('.message__block');
+        lastMessageAuthor = lastMessageElem.getAttribute('data-author');
+
+        if (lastMessageAuthor === messageData.payload.uid) {
+            unit.innerHTML = newMessageUnit(messageData.payload);
+            lastMessageBlock.append(unit.children[0]);
+        } else {
+            unit.innerHTML = newMessageBody(messageData.payload);
+            chatContainer.append(unit.children[0]);
+        }
+    } else {
+        unit.innerHTML = newMessageBody(messageData.payload);
+        chatContainer.append(unit.children[0]);
+    }
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function newMessageBody(messageData) {
@@ -103,15 +155,20 @@ function newMessageBody(messageData) {
     }
 
     template = Handlebars.compile(sourceTemplate);
-    return template({nickname, text: messageData.message, time: `${time.getHours()}:${time.getMinutes()}` });
+    return template({nickname: messageData.nickname, uid: messageData.uid, text: messageData.message, time: messageData.time });
 }
 
-function messageUnit(messageData) {
-    const sourceTemplate = document.getElementById("message-unit").innerHTML;
-    const template = Handlebars.compile(sourceTemplate);
-    const time = new Date();
+function newMessageUnit(messageData, messageType = 'userMessage') {
+    let sourceTemplate;
 
-    return template({ text: messageData.message, time: `${time.getHours()}:${time.getMinutes()}` });
+    if (messageType === 'userMessage') {
+        sourceTemplate = document.getElementById("message-unit").innerHTML;
+    } else {
+        sourceTemplate = document.getElementById("message-unit-service").innerHTML;
+    }
+
+    const template = Handlebars.compile(sourceTemplate);
+    return template({ text: messageData.message, time: messageData.time });
 }
 
 function handlePhotoWindow() {
@@ -128,4 +185,20 @@ function handlePhotoWindow() {
     closeFsModal.addEventListener('click', toggleModal);
 }
 
+function applyCurrentMessages(messages) {
+    console.log(messages);
+    let fragment = document.createDocumentFragment();
+    for (let message of messages) {
+        addMessage(message, fragment);
+    }
+    chatContainer.append(fragment);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
+
+function dd() {
+    const message = JSON.stringify({ event: 'users:get', payload: {uid: uid, nickname: nickname, message: ''} });
+    send(message);
+}
+
+// dd();
