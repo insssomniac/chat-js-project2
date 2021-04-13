@@ -18,20 +18,7 @@
 
   {{#if uid}}
   <div class="chat">
-    <div class="chat__left-section users">
-
-      {{#each users}}
-      <div class="users__user user">
-        <div class="user__picture-container">
-        </div>
-        <div class="user__info">
-          <div class="user__nickname">users.nickname</div>
-          <div class="user__last-message">users.lastmessage</div>
-        </div>
-      </div>
-      {{/each}}
-
-    </div>
+    <div class="chat__left-section users" id="users"></div>
 
     <div class="chat__main-section main">
       <div class="main__top-line">
@@ -123,6 +110,16 @@
   <div class="message__unit service-message">
     <div class="service-message__text">{{text}}</div>
     <div class="service-message__time">{{time}}</div>
+  </div>
+</script>
+<script id="user-info-left-panel" type="text/x-handlebars-template">
+  <div class="users__user user">
+    <div class="user__picture-container">
+    </div>
+    <div class="user__info">
+      <div class="user__nickname">{{nickname}}</div>
+      <div class="user__last-message">{{lastmessage}}</div>
+    </div>
   </div>
 </script>
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>

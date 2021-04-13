@@ -43,13 +43,14 @@ socket.addEventListener('message', (e) => {
     const messageDecoded = JSON.parse(e.data);
     switch (messageDecoded.event) {
         case "users:all":
-            // applyCurrentUsers();
+            applyCurrentUsers(messageDecoded.payload);
             break;
         case "messages:all":
             applyCurrentMessages(messageDecoded.payload);
             break;
         default:
             addMessage(messageDecoded, chatContainer);
+            sendMessage('users:get');
     }
 });
 
@@ -185,8 +186,13 @@ function handlePhotoWindow() {
     closeFsModal.addEventListener('click', toggleModal);
 }
 
+function newUser(user) {
+    const sourceTemplate = document.getElementById("user-info-left-panel").innerHTML;
+    const template = Handlebars.compile(sourceTemplate);
+    return template({nickname: user.nickname, lastmessage: user.lastmessage});
+}
+
 function applyCurrentMessages(messages) {
-    console.log(messages);
     let fragment = document.createDocumentFragment();
     for (let message of messages) {
         addMessage(message, fragment);
@@ -195,10 +201,15 @@ function applyCurrentMessages(messages) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-
-function dd() {
-    const message = JSON.stringify({ event: 'users:get', payload: {uid: uid, nickname: nickname, message: ''} });
-    send(message);
+function applyCurrentUsers(users) {
+    let unit = document.createElement('div');
+    const usersSection = document.querySelector('#users');
+    let fragment = document.createDocumentFragment();
+    for (let user in users) {
+        unit.innerHTML = newUser(users[user]);
+        fragment.append(unit.children[0]);
+    }
+    usersSection.innerHTML = '';
+    usersSection.append(fragment);
 }
 
-// dd();

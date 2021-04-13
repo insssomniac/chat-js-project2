@@ -215,7 +215,7 @@ input::-webkit-input-placeholder {
   flex-direction: column;
   flex-grow: 3;
   padding: 0 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .conversation {
