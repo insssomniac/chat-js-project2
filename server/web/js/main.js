@@ -79,7 +79,6 @@ function assignChatElements() {
         sendMessage('message:add', messageInput.value);
         messageInput.value = '';
     });
-    // chatContainer.innerHTML = '';
 }
 
 function sendMessage(eventType, text = '') {
