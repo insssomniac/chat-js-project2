@@ -146,7 +146,6 @@ function addTextMessage(messageData, chatContainer) {
 function newMessageBody(messageData) {
     let sourceTemplate;
     let template;
-    const time = new Date();
 
     if (messageData.nickname === nickname) {
         sourceTemplate = document.getElementById("message-own").innerHTML;
