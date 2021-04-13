@@ -19,11 +19,6 @@ http.createServer((req, res) => {
             res.write(fs.readFileSync(filePath + '/index.html'));
             res.end();
             break;
-        case '/css/main.css':
-            res.writeHead(200, {'Content-Type': 'text/css'});
-            res.write(fs.readFileSync(filePath));
-            res.end();
-            break;
         default:
             const strArr = req.url.split('.');
             const ext = strArr[strArr.length - 1];
