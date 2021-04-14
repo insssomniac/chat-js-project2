@@ -46,12 +46,13 @@
   </a>
 
   <div class="fullscreen-modal modal" id="fullscreen-modal">
-    <div class="modal__window">
+    <div class="modal__window" data-role="user-pic-upload-area">
       <a class="fullscreen-modal__close-btn btn-close-modal" id="close-fs-modal"></a>
       <div class="modal__title">Загрузка фото</div>
-      <div class="modal__desc">Перетащите изображение в эту область</div>
+      <div class="modal__desc">Перетащите сюда изображение в формате PNG</div>
       <div class="modal__content">
-        <div class="modal__pic-preview"></div>
+        <div class="modal__pic-preview" data-role="user-pic" data-user="{{uid}}" style="background: url(userpics/{{uid}}.png) no-repeat top/cover">
+        </div>
         <div class="modal__nickname">{{nickname}}</div>
       </div>
     </div>
@@ -83,13 +84,12 @@
           <div class="message__time">{{time}}</div>
         </div>
     </div>
-    <div class="message__user-pic">
-    </div>
+    <div class="message__user-pic" data-role="user-pic" data-user="{{uid}}" style="background: url(userpics/{{uid}}.png) no-repeat top/cover"></div>
   </div>
 </script>
 <script id="message-someone" type="text/x-handlebars-template">
   <div class="conversation__message message someone-message" data-author="{{uid}}">
-    <div class="message__user-pic">
+    <div class="message__user-pic" data-role="user-pic" data-user="{{uid}}" style="background: no-repeat url(userpics/{{uid}}.png) top/cover">
     </div>
     <div class="message__block">
       <div class="message__nickname">{{nickname}}</div>
@@ -114,8 +114,7 @@
 </script>
 <script id="user-info-left-panel" type="text/x-handlebars-template">
   <div class="users__user user">
-    <div class="user__picture-container">
-    </div>
+    <div class="user__picture-container" data-role="user-pic" data-user="{{uid}}" style="background: no-repeat url(userpics/{{uid}}.png) top/cover"></div>
     <div class="user__info">
       <div class="user__nickname">{{nickname}}</div>
       <div class="user__last-message">{{lastmessage}}</div>

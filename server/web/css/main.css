@@ -172,6 +172,7 @@ input::-webkit-input-placeholder {
   background: #232F3D;
   overflow: hidden;
   margin-right: 10px;
+  background-size: cover;
 }
 
 .user__nickname {
@@ -238,6 +239,7 @@ input::-webkit-input-placeholder {
   background: #232F3D;
   overflow: hidden;
   margin-top: 25px;
+  background-size: cover;
 }
 
 .message__nickname {
@@ -406,7 +408,6 @@ input::-webkit-input-placeholder {
   height: 86px;
   position: relative;
   border-radius: 50%;
-  background: url("../resources/modal-photo.svg") no-repeat center #232F3D;
   overflow: hidden;
   margin-right: 15px;
 }

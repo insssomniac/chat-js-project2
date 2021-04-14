@@ -16,13 +16,13 @@ if (uid) {
     sendMessage('user:in');
     sendMessage('users:get');
     sendMessage('messages:get');
-    console.log('refresh page');
+    handlePhotoUpload();
 } else {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
         if (socket.readyState === 1) {
-            nickname = nicknameInput.value;
+            nickname = sanitize(nicknameInput.value);
             uid = getUid(nickname);
             sessionStorage.setItem('nickname', nickname);
             sessionStorage.setItem('uid', uid);
@@ -33,6 +33,7 @@ if (uid) {
             sendMessage('user:in');
             sendMessage('users:get');
             sendMessage('messages:get');
+            handlePhotoUpload();
         } else {
             return console.error('Connection error');
         }
@@ -47,6 +48,9 @@ socket.addEventListener('message', (e) => {
             break;
         case "messages:all":
             applyCurrentMessages(messageDecoded.payload);
+            break;
+        case "photo:changed":
+            applyPhoto(messageDecoded.payload.uid);
             break;
         default:
             addMessage(messageDecoded, chatContainer);
@@ -76,7 +80,7 @@ function assignChatElements() {
 
     messageForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        sendMessage('message:add', messageInput.value);
+        sendMessage('message:add', sanitize(messageInput.value));
         messageInput.value = '';
     });
 }
@@ -184,10 +188,48 @@ function handlePhotoWindow() {
     closeFsModal.addEventListener('click', toggleModal);
 }
 
+function handlePhotoUpload() {
+    const avatarUploadArea = document.querySelector('[data-role=user-pic-upload-area]');
+
+    console.log(avatarUploadArea);
+
+    avatarUploadArea.addEventListener('dragover', (e) => {
+        if (e.dataTransfer.items.length && e.dataTransfer.items[0].kind === 'file') e.preventDefault();
+        console.log('dragover');
+    });
+
+    avatarUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+
+        const file = e.dataTransfer.items[0].getAsFile();
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.addEventListener('load', () => upload(reader.result, '/upload-photo'));
+    });
+}
+
+function upload(data, url) {
+    fetch(url, {
+        method: 'post',
+        body: JSON.stringify({
+            uid: uid,
+            data: data,
+        }),
+    });
+}
+
+function applyPhoto(uid) {
+    const avatars = document.querySelectorAll(`[data-role=user-pic][data-user=${uid}]`)
+    for (const avatar of avatars) {
+        avatar.style = `background: no-repeat url(userpics/${uid}.png?t=${Date.now()}) top/cover`;
+    }
+}
+
 function newUser(user) {
     const sourceTemplate = document.getElementById("user-info-left-panel").innerHTML;
     const template = Handlebars.compile(sourceTemplate);
-    return template({nickname: user.nickname, lastmessage: user.lastmessage});
+    return template({uid:user.uid, nickname: user.nickname, lastmessage: user.lastmessage});
 }
 
 function applyCurrentMessages(messages) {
@@ -211,3 +253,17 @@ function applyCurrentUsers(users) {
     usersSection.append(fragment);
 }
 
+function sanitize(string) {
+    const UNSAFE_CHARS_RE = /<|>\/|'|\u2028|\u2029/g;
+    const ESCAPED_CHARS = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '\\u0027',
+        '</': '<\\u002F',
+        '\u2028': '\\u2028',
+        '\u2029': '\\u2029',
+    };
+    const escapeUnsafeChars = (unsafeChar) => ESCAPED_CHARS[unsafeChar];
+    return string.replace(UNSAFE_CHARS_RE, escapeUnsafeChars);
+}
