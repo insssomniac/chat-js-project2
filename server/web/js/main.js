@@ -245,12 +245,42 @@ function applyCurrentUsers(users) {
     let unit = document.createElement('div');
     const usersSection = document.querySelector('#users');
     let fragment = document.createDocumentFragment();
+    let counter = 0;
     for (let user in users) {
         unit.innerHTML = newUser(users[user]);
         fragment.append(unit.children[0]);
+        counter++;
     }
     usersSection.innerHTML = '';
     usersSection.append(fragment);
+    countMembers(counter);
+}
+
+function countMembers(count) {
+    const countMembers = document.querySelector('[data-role=count-members]');
+    count = count % 10;
+    let res;
+
+    switch (count) {
+        case 1:
+            res = `${count} участник`;
+            break;
+        case 2:
+        case 3:
+        case 4:
+            res = `${count} участника`;
+            break;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 0:
+            res = `${count} участников`;
+            break;
+    }
+
+    countMembers.innerHTML = res;
 }
 
 function sanitize(string) {
